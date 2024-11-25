@@ -1,0 +1,171 @@
+<!-- version TD2 -->
+<!--<div class="container">
+  <div class="row">
+    <div class="col-md-3">Title:</div>
+    <div class="col-md-9"><input type="text" class="form-control" id="title" placeholder="Enter title"></div>
+  </div>
+  <div class="row">
+    <div class="col-md-3">Description:</div>
+    <div class="col-md-9"><textarea class="form-control" id="description" placeholder="Enter description"></textarea></div>
+  </div>
+  <div class="row">
+    <div class="col-md-3">Category:</div>
+    <div class="col-md-9"><select class="form-control" id="category">
+      <option value="">Select category</option>
+
+    </select></div>
+  </div>
+  <div class="row">
+    <div class="col-md-3">Level:</div>
+    <div class="col-md-9"><select class="form-control" id="level">
+      <option value="">Select level</option>
+
+    </select></div>
+  </div>
+  <div class="row">
+    <div class="col-md-3">Prerequisite:</div>
+    <div class="col-md-9"><input type="text" class="form-control" id="prerequisite" placeholder="Enter prerequisite (comma separated)"></div>
+  </div>
+  <div class="row">
+    <div class="col-md-3">Tags:</div>
+    <div class="col-md-9">
+      <input type="text" class="form-control" id="tags" placeholder="Enter tags (comma separated)">
+      <button class="btn btn-primary" id="add-tag-btn">Add</button>
+      <ul id="tag-list"></ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3">Copyright:</div>
+    <div class="col-md-9"><input type="text" class="form-control" id="copyright" placeholder="Enter copyright"></div>
+  </div>
+
+  <button type="button" class="btn btn-primary" (click)="onClickSubmit()">Submit</button>
+
+  <button class="btn btn-primary" routerLink="/lesson/1234">Detail for lesson/1234</button>
+</div> -->
+
+
+<!--<div class="container">
+  <div class="row mt-2"><label class="col-md-1" for="title">Title</label>
+    <input id="title" type="text" class="col-md-5" [(ngModel)]="title"></div>
+
+  <div class="row mt-2"><label class="col-md-1" for="description">Description</label>
+    <textarea id="description" class="col-11" rows="4" [(ngModel)]="description"></textarea>
+  </div>
+
+  <div class="row mt-2"><label class="col-md-1" for="category">Category</label>
+    <input id="category" type="text" class="col-md-2" [(ngModel)]="category">
+    <label class="col-md-1" for="level" ngbTooltip="Enter value between 1(basics) to 10(advanced)" placement="top">Level</label>
+
+    <input id="level" type="number" class="col-md-1" min="1" max="10" [(ngModel)]="level">
+    <label class="col-md-1" for="prerequisites">Prerequisite</label>
+
+    <input id="prerequisites" type="text" class="col-md-6" [(ngModel)]="prerequisite">
+  </div>
+
+  <div class="row mt-2"><label
+    class="col-md-1" for="Tags" ngbTooltip="Enter tags, separated by commas" placement="top">Tags</label>
+    <input id="tags" type="text" class="col-md-11" placeholder="Enter tags" [(ngModel)]="tags">
+  </div>
+
+  <div class="row mt-1"><label
+    class="col-md-1" for="license">License</label>
+    <input id="license" type="text" class="col-md-5" [(ngModel)]="copyright">
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-md-2"></div>
+    <div class="col-md-2">
+      <button type="button" class="btn btn-primary" (click)="onClickSubmit()">Submit</button>
+    </div>
+  </div>
+
+</div>-->
+
+
+<!--<form>
+  <div class="form-group"><label for="titleField">Title</label>
+    <input type="text" class="form-control" id="titleField" placeholder="Enter title" formControlName="title">
+  </div>
+
+  <div class="form-group"><label for="descriptionField">Description</label>
+    <textarea class="form-control" id="descriptionField" rows="3" placeholder="Enter description"
+              formControlName="description"></textarea>
+  </div>
+
+  <div class="form-group"><label for="categoryField">Category</label>
+    <input type="text" class="form-control" id="categoryField" placeholder="Enter category" formControlName="category">
+  </div>
+
+  <div class="form-group"><label for="levelField"
+                                 ngbTooltip="Enter value between 1(basics) to 10(advanced)">Level</label>
+    <input type="text" class="form-control" id="levelField" placeholder="Enter level" min="1" max="10"
+           formControlName="level">
+  </div>
+
+  <div class="form-group"><label for="prerequisiteField">Prerequisite</label>
+    <input type="text" class="form-control" id="prerequisiteField" placeholder="Enter prerequisite"
+           formControlName="prerequisite">
+  </div>
+
+  <div class="form-group"><label for="tagsField" ngbTooltip="Enter tags, separated by commas">Tags</label>
+    <input type="text" class="form-control" id="tagsField" placeholder="Enter tags" formControlName="tags">
+  </div>
+
+  <div class="form-group"><label for="copyrightField">Copyright</label>
+    <input type="text" class="form-control" id="copyrightField" placeholder="Enter copyright"
+           formControlName="copyright">
+  </div>
+
+  <button type="submit" class="btn btn-primary" (click)="onClickSubmit()">Export</button>
+</form>-->
+
+<form [formGroup]="lessonForm" (ngSubmit)="onClickSubmit()">
+
+  <div class="form-group">
+    <label for="titleField" [class]="lessonForm.get('title')?.invalid ? 'text-danger' : ''">Title</label>
+    <input type="text" class="form-control" id="titleField" placeholder="Enter title" formControlName="title">
+  </div>
+
+  <div class="form-group">
+    <label for="descriptionField" [class]="lessonForm.get('description')?.invalid ? 'text-danger' : ''">Description</label>
+    <textarea class="form-control" id="descriptionField" rows="3" placeholder="Enter description"
+              formControlName="description"></textarea>
+  </div>
+
+  <div class="form-group">
+    <label for="categoryField">Category</label>
+    <input type="text" class="form-control" id="categoryField" placeholder="Enter category" formControlName="category">
+  </div>
+
+  <div class="form-group">
+    <label for="levelField" ngbTooltip="Enter value between 1(basics) to 10(advanced)">Level</label>
+    <input type="number" class="form-control" id="levelField" placeholder="Enter level" min="1" max="10"
+           formControlName="level">
+  </div>
+
+  <div class="form-group">
+    <label for="prerequisiteField">Prerequisite</label>
+    <input type="text" class="form-control" id="prerequisiteField" placeholder="Enter prerequisite"
+           formControlName="prerequisite">
+  </div>
+
+  <div class="form-group">
+    <label for="tagsField" ngbTooltip="Enter tags, separated by commas">Tags</label>
+    <input type="text" class="form-control" id="tagsField" placeholder="Enter tags" formControlName="tags">
+  </div>
+
+  <div class="form-group">
+    <label for="copyrightField">Copyright</label>
+    <input type="text" class="form-control" id="copyrightField" placeholder="Enter copyright"
+           formControlName="copyright">
+  </div>
+
+  <div class="row mt-2"><label class="col-md-2"></label>
+    <button type="button" class="btn btn-primary col-md-2" (click)="onClickSubmit()" [disabled]="!lessonForm.valid">
+      Submit
+    </button>
+    <span *ngIf="lessonForm.invalid" class="col-md-8 text-danger"> Please fill out all required fields. </span></div>
+
+</form>
+

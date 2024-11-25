@@ -41,6 +41,38 @@ var jsDocOptions = {
                     },
                 },
                 // Define other schemas as needed
+                LearningPackage: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'integer',
+                            description: 'Unique identifier of the Learning Package',
+                        },
+                        title: {
+                            type: 'string',
+                            description: 'Title of the Learning Package',
+                        },
+                        description: {
+                            type: 'string',
+                            description: 'Description of the Learning Package',
+                        },
+                        category: {
+                            type: 'string',
+                            description: 'Category of the Learning Package (e.g., Programming, Web Development)',
+                        },
+                        targetAudience: {
+                            type: 'string',
+                            description: 'Target audience for the Learning Package (e.g., age, prerequisites)',
+                        },
+                        difficulty: {
+                            type: 'integer',
+                            description: 'Difficulty level of the Learning Package (from 1 to 20)',
+                            minimum: 1,
+                            maximum: 20,
+                        },
+                    },
+                    required: ['id', 'title', 'description', 'category', 'targetAudience', 'difficulty'], // Optional: add required fields if necessary
+                },
             },
         },
     },
@@ -203,7 +235,154 @@ app.delete('/api/todos/:id', function (req, res) {
         res.status(404).send('Todo entity not found by id:' + id);
     }
 });
-// app.patch()
+// Hard-coded array of LearningPackage objects
+var learningPackages = [
+    { id: 1, title: "Learn TypeScript", description: "An introductory course to TypeScript.", category: "Programming", targetAudience: "Beginner, 15+ years old", difficulty: 5 },
+    { id: 2, title: "Learn NodeJs", description: "A course on building backend applications using Node.js.", category: "Programming", targetAudience: "Intermediate, 18+ years old", difficulty: 8 },
+    { id: 3, title: "Learn Html", description: "Basic web development with HTML.", category: "Web Development", targetAudience: "Beginner, 12+ years old", difficulty: 4 },
+    { id: 4, title: "Learn Angular", description: "A comprehensive guide to building web apps with Angular.", category: "Web Development", targetAudience: "Intermediate, 16+ years old", difficulty: 7 },
+];
+/**
+ * @openapi
+ * /api/package:
+ *   get:
+ *     description: Get all learning packages
+ *     responses:
+ *       200:
+ *         description: An array of LearningPackage
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/LearningPackage'
+ */
+app.get('/api/package', function (req, res) {
+    console.log('handle http GET /api/package');
+    res.status(200).json(learningPackages);
+});
+/**
+ * @openapi
+ * /api/package:
+ *   post:
+ *     description: Create a new LearningPackage
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/LearningPackage'
+ *     responses:
+ *       200:
+ *         description: Created LearningPackage
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/LearningPackage'
+ *       400:
+ *         description: Missing required fields
+ */
+app.post('/api/package', function (req, res) {
+    var _a = req.body, title = _a.title, description = _a.description, category = _a.category, targetAudience = _a.targetAudience, difficulty = _a.difficulty;
+    // Validate required fields
+    if (!title || !description || !category || !targetAudience || difficulty === undefined) {
+        res.status(400).send("Mandatory fields 'title', 'description', 'category', 'targetAudience', and 'difficulty' are missing.");
+        return;
+    }
+    // Validate difficulty range
+    if (difficulty < 1 || difficulty > 20) {
+        res.status(400).send("Field 'difficulty' must be between 1 and 20.");
+        return;
+    }
+    var newPackage = {
+        id: learningPackages.length + 1, // Generate new id
+        title: title,
+        description: description,
+        category: category,
+        targetAudience: targetAudience,
+        difficulty: difficulty,
+    };
+    learningPackages.push(newPackage); // Add to list
+    res.status(200).send(newPackage); // Return the created object
+});
+/**
+ * @openapi
+ * /api/package:
+ *   put:
+ *     description: Update an existing LearningPackage
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/LearningPackage'
+ *     responses:
+ *       200:
+ *         description: Updated LearningPackage
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/LearningPackage'
+ *       404:
+ *         description: LearningPackage not found
+ */
+app.put('/api/package', function (req, res) {
+    var _a = req.body, id = _a.id, title = _a.title, description = _a.description, category = _a.category, targetAudience = _a.targetAudience, difficulty = _a.difficulty;
+    // Validate ID and all fields
+    if (!id || !title || !description || !category || !targetAudience || difficulty === undefined) {
+        res.status(400).send("Mandatory fields 'id', 'title', 'description', 'category', 'targetAudience', and 'difficulty' are missing.");
+        return;
+    }
+    // Validate difficulty range
+    if (difficulty < 1 || difficulty > 20) {
+        res.status(400).send("Field 'difficulty' must be between 1 and 20.");
+        return;
+    }
+    var packageIndex = learningPackages.findIndex(function (pkg) { return pkg.id === id; });
+    if (packageIndex !== -1) {
+        // Update the learning package
+        learningPackages[packageIndex] = {
+            id: id,
+            title: title,
+            description: description,
+            category: category,
+            targetAudience: targetAudience,
+            difficulty: difficulty,
+        };
+        res.status(200).send(learningPackages[packageIndex]); // Respond with updated object
+    }
+    else {
+        res.status(404).send("Entity not found for id: ".concat(id));
+    }
+});
+/**
+ * @openapi
+ * /api/package-summaries:
+ *   get:
+ *     description: Get a summary of all LearningPackages (only id and title)
+ *     responses:
+ *       200:
+ *         description: An array of LearningPackage summaries
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                   title:
+ *                     type: string
+ */
+app.get('/api/package-summaries', function (req, res) {
+    // Get the summaries with only id and title fields
+    var summaries = learningPackages.map(function (pkg) { return ({
+        id: pkg.id,
+        title: pkg.title,
+    }); });
+    res.status(200).send(summaries);
+});
 console.log('starting...');
 app.listen(3000, function () {
     console.log('Ok, started port 3000, please open http://localhost:3000/swagger-ui');
