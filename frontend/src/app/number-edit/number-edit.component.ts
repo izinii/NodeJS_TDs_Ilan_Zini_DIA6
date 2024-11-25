@@ -2,6 +2,7 @@ import {Component, Input, Output} from '@angular/core';
 import {Subject} from "rxjs";
 import {FormsModule} from '@angular/forms';
 
+
 @Component({
   selector: 'app-number-edit',
   standalone: true,
@@ -12,6 +13,7 @@ import {FormsModule} from '@angular/forms';
   styleUrl: './number-edit.component.css',
   template: '<input [(ngModel)]="value" (ngModelChange)="onInputChange()">'
 })
+
 
 export class NumberEditComponent {
 

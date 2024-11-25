@@ -3,6 +3,8 @@ import {NgbCalendar, NgbDate, NgbDateParserFormatter, NgbDatepickerModule} from 
 import {FormsModule} from '@angular/forms';
 import {JsonPipe} from '@angular/common';
 
+
+
 @Component({
   selector: 'app-date-picker-range-popup',
   standalone: true,
@@ -10,7 +12,10 @@ import {JsonPipe} from '@angular/common';
   templateUrl: './date-picker-range-popup.component.html',
   styleUrl: './date-picker-range-popup.component.css'
 })
+
+
 export class DatePickerRangePopupComponent {
+
   calendar = inject(NgbCalendar);
   formatter = inject(NgbDateParserFormatter);
 
@@ -52,4 +57,5 @@ export class DatePickerRangePopupComponent {
     const parsed = this.formatter.parse(input);
     return parsed && this.calendar.isValid(NgbDate.from(parsed)) ? NgbDate.from(parsed) : currentValue;
   }
+
 }

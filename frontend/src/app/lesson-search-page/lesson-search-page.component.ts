@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {DatePickerRangePopupComponent} from '../date-picker-range-popup/date-picker-range-popup.component';
 
+
 export interface LessonPackage {
   title: string;
   description: string;
@@ -11,6 +12,7 @@ export interface LessonPackage {
   lastModifiedDate: string;
 }
 
+
 @Component({
   selector: 'app-lesson-search-page',
   standalone: true,
@@ -18,6 +20,8 @@ export interface LessonPackage {
   templateUrl: './lesson-search-page.component.html',
   styleUrl: './lesson-search-page.component.css'
 })
+
+
 export class LessonSearchPageComponent {
 
 }

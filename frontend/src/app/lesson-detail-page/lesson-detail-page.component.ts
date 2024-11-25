@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 
+
 @Component({
   selector: 'app-lesson-detail-page',
   standalone: true,
@@ -8,7 +9,10 @@ import {ActivatedRoute, Router} from "@angular/router";
   templateUrl: './lesson-detail-page.component.html',
   styleUrl: './lesson-detail-page.component.css'
 })
+
+
 export class LessonDetailPageComponent {
+
   readonly initialId: number;
   id: number | undefined;
 
@@ -25,4 +29,5 @@ export class LessonDetailPageComponent {
     const nextId = (this.id) ? this.id + 1 : 1;
     this.router.navigate(['/lesson', nextId]);
   }
+
 }

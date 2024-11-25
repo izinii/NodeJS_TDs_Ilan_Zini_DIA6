@@ -1,6 +1,7 @@
 import {Component, Output} from '@angular/core';
 import {Subject} from 'rxjs';
 
+
 @Component({
   selector: 'app-number-steps',
   standalone: true,
@@ -8,6 +9,8 @@ import {Subject} from 'rxjs';
   templateUrl: './number-steps.component.html',
   styleUrl: './number-steps.component.css'
 })
+
+
 export class NumberStepsComponent {
 
   @Output() decr10 = new Subject<number>();

@@ -4,14 +4,9 @@ import {UserSettingsService} from '../user-settings.service';
 import {FormBuilder, FormsModule, ReactiveFormsModule, FormGroup, Validators} from '@angular/forms';
 import {LessonPackage} from '../app.component';
 import {NgbTooltip} from '@ng-bootstrap/ng-bootstrap';
-import {NgIf} from '@angular/common';;
-
-/*import {UserSettingsService} from "../user-settings.service";*/
+import {NgIf} from '@angular/common';
 
 
-/*class UserSettingsService {
-  lastLessonId: number | undefined;
-}*/
 
 @Component({
   selector: 'app-lesson-edit-form',
@@ -25,7 +20,10 @@ import {NgIf} from '@angular/common';;
   ],
   templateUrl: './lesson-edit-form.component.html'
 })
+
+
 export class LessonEditFormComponent implements OnInit, OnDestroy {
+
   constructor(private router: Router, private userSettingsService: UserSettingsService, private formBuilder: FormBuilder) {
     this.lessonForm = formBuilder.group({
       title: ['', Validators.required],
@@ -50,16 +48,6 @@ export class LessonEditFormComponent implements OnInit, OnDestroy {
     copyright: ''
   }
 
-/*
-title: string = '';
-  description: string = '';
-  category: string = '';
-  level: number = 1;
-  prerequisite: string[] = [];
-  tags: string[] = [];
-  copyright: string = '';
-  */
-
 
   ngOnInit(): void {
     console.log("LessonListPageComponent.ngOnInit()");
@@ -78,12 +66,14 @@ title: string = '';
     console.log("LessonListPageComponent.ngOnDestroy()");
   }
 
-
   onClickSubmit() {
-    if (this.lessonForm.valid) {
+    if (this.lessonForm.valid)
+    {
       const formData = this.lessonForm.value;
       console.log('Form data submitted:', formData);
-    } else {
+    }
+    else
+    {
       console.log('Form is invalid. Please check the required fields.');
     }
   }

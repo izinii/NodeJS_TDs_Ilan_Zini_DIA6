@@ -26,6 +26,7 @@ export interface LessonPackage {
 })
 
 export class AppComponent implements OnInit, OnDestroy {
+
   title = 'frontend';
 
   constructor() {
@@ -39,4 +40,5 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     console.log('AppComponent.ngOnDestroy');
   }
+
 }

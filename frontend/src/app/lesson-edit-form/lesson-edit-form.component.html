@@ -45,44 +45,8 @@
 </div> -->
 
 
-<!--<div class="container">
-  <div class="row mt-2"><label class="col-md-1" for="title">Title</label>
-    <input id="title" type="text" class="col-md-5" [(ngModel)]="title"></div>
 
-  <div class="row mt-2"><label class="col-md-1" for="description">Description</label>
-    <textarea id="description" class="col-11" rows="4" [(ngModel)]="description"></textarea>
-  </div>
-
-  <div class="row mt-2"><label class="col-md-1" for="category">Category</label>
-    <input id="category" type="text" class="col-md-2" [(ngModel)]="category">
-    <label class="col-md-1" for="level" ngbTooltip="Enter value between 1(basics) to 10(advanced)" placement="top">Level</label>
-
-    <input id="level" type="number" class="col-md-1" min="1" max="10" [(ngModel)]="level">
-    <label class="col-md-1" for="prerequisites">Prerequisite</label>
-
-    <input id="prerequisites" type="text" class="col-md-6" [(ngModel)]="prerequisite">
-  </div>
-
-  <div class="row mt-2"><label
-    class="col-md-1" for="Tags" ngbTooltip="Enter tags, separated by commas" placement="top">Tags</label>
-    <input id="tags" type="text" class="col-md-11" placeholder="Enter tags" [(ngModel)]="tags">
-  </div>
-
-  <div class="row mt-1"><label
-    class="col-md-1" for="license">License</label>
-    <input id="license" type="text" class="col-md-5" [(ngModel)]="copyright">
-  </div>
-
-  <div class="row mt-2">
-    <div class="col-md-2"></div>
-    <div class="col-md-2">
-      <button type="button" class="btn btn-primary" (click)="onClickSubmit()">Submit</button>
-    </div>
-  </div>
-
-</div>-->
-
-
+<!-- alternative version TD3 -->
 <!--<form>
   <div class="form-group"><label for="titleField">Title</label>
     <input type="text" class="form-control" id="titleField" placeholder="Enter title" formControlName="title">
@@ -120,6 +84,9 @@
   <button type="submit" class="btn btn-primary" (click)="onClickSubmit()">Export</button>
 </form>-->
 
+
+
+<!-- final version -->
 <form [formGroup]="lessonForm" (ngSubmit)="onClickSubmit()">
 
   <div class="form-group">
@@ -162,10 +129,9 @@
   </div>
 
   <div class="row mt-2"><label class="col-md-2"></label>
-    <button type="button" class="btn btn-primary col-md-2" (click)="onClickSubmit()" [disabled]="!lessonForm.valid">
-      Submit
-    </button>
-    <span *ngIf="lessonForm.invalid" class="col-md-8 text-danger"> Please fill out all required fields. </span></div>
+    <button type="button" class="btn btn-primary col-md-2" (click)="onClickSubmit()" [disabled]="!lessonForm.valid">Submit</button>
+    <span *ngIf="lessonForm.invalid" class="col-md-8 text-danger"> Please fill out all required fields. </span>
+  </div>
 
 </form>
 

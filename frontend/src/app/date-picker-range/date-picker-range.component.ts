@@ -3,6 +3,8 @@ import {NgbCalendar, NgbDate, NgbDatepickerModule} from '@ng-bootstrap/ng-bootst
 import {FormsModule} from '@angular/forms';
 import {JsonPipe} from '@angular/common';
 
+
+
 @Component({
   selector: 'app-date-picker-range',
   standalone: true,
@@ -10,7 +12,10 @@ import {JsonPipe} from '@angular/common';
   templateUrl: './date-picker-range.component.html',
   styleUrl: './date-picker-range.component.css',
 })
+
+
 export class DatePickerRangeComponent {
+
   calendar = inject(NgbCalendar);
 
   hoveredDate: NgbDate | null = null;
@@ -46,4 +51,5 @@ export class DatePickerRangeComponent {
       this.isHovered(date)
     );
   }
+
 }

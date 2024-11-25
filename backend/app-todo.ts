@@ -1,16 +1,18 @@
 import express = require('express');
 import { Request, Response} from 'express';
+import swaggerJsdoc = require('swagger-jsdoc');
+import swaggerUi = require('swagger-ui-express');
+import { LearningPackage } from './models/LearningPackage';
+
+
 
 const app = express();
-app.use(express.json()); // => to parse request body with http header "content-type": "application/json"
-
-import swaggerJsdoc = require('swagger-jsdoc'); // * as swaggerJsdoc from 'swagger-jsdoc'
-import swaggerUi = require('swagger-ui-express');
+app.use(express.json());
 
 
 const jsDocOptions = {
     definition: {
-        openapi: '3.0.0', // Specify the OpenAPI version
+        openapi: '3.0.0',
         info: {
             title: 'Express API with Swagger',
             version: '1.0.0',
@@ -43,6 +45,7 @@ const jsDocOptions = {
                         },
                     },
                 },
+
                 // Define other schemas as needed
                 LearningPackage: {
                     type: 'object',
@@ -61,20 +64,20 @@ const jsDocOptions = {
                         },
                         category: {
                             type: 'string',
-                            description: 'Category of the Learning Package (e.g., Programming, Web Development)',
+                            description: 'Category of the Learning Package',
                         },
                         targetAudience: {
                             type: 'string',
-                            description: 'Target audience for the Learning Package (e.g., age, prerequisites)',
+                            description: 'Target audience for the Learning Package',
                         },
                         difficulty: {
                             type: 'integer',
-                            description: 'Difficulty level of the Learning Package (from 1 to 20)',
+                            description: 'Difficulty level of the Learning Package',
                             minimum: 1,
                             maximum: 20,
                         },
                     },
-                    required: ['id', 'title', 'description', 'category', 'targetAudience', 'difficulty'], // Optional: add required fields if necessary
+                    required: ['id', 'title', 'description', 'category', 'targetAudience', 'difficulty'],
                 },
             },
         },
@@ -83,17 +86,20 @@ const jsDocOptions = {
 };
 
 
-
 const apiDoc = swaggerJsdoc(jsDocOptions);
 console.log('api-doc json:', JSON.stringify(apiDoc, null,2));
 
 app.use('/swagger-ui', swaggerUi.serve, swaggerUi.setup(apiDoc));
 
 
-
 app.get('/api/liveness', (req: Request, res: Response) => {
     res.send('OK !!!');
 });
+
+
+
+
+// TODOS PART
 
 interface Todo {
     id?: number;
@@ -106,6 +112,7 @@ let idGenerator = 1;
 function newId() {
     return idGenerator++;
 }
+
 let todos : Todo[] = [
     {id: newId(), title: 'Learn TypeScript'},
     {id: newId(), title: 'Learn Angular'},
@@ -132,6 +139,7 @@ app.get('/api/todos', (req: Request, res: Response) => {
     res.send(todos);
 });
 
+
 /**
  * @openapi
  * /api/todos:
@@ -156,6 +164,7 @@ app.post('/api/todos', (req: Request, res: Response) => {
     todos.push(item);
     res.send(item);
 });
+
 
 /**
  * @openapi
@@ -267,11 +276,9 @@ app.delete('/api/todos/:id', (req, res) => {
 
 
 
+// PACKAGE PART
 
 
-import { LearningPackage } from './models/LearningPackage';
-
-// Hard-coded array of LearningPackage objects
 const learningPackages: LearningPackage[] = [
     { id: 1, title: "Learn TypeScript", description: "An introductory course to TypeScript.", category: "Programming", targetAudience: "Beginner, 15+ years old", difficulty: 5 },
     { id: 2, title: "Learn NodeJs", description: "A course on building backend applications using Node.js.", category: "Programming", targetAudience: "Intermediate, 18+ years old", difficulty: 8 },
@@ -299,7 +306,6 @@ app.get('/api/package', (req: Request, res: Response) => {
     console.log('handle http GET /api/package');
     res.status(200).json(learningPackages);
 });
-
 
 
 /**
@@ -350,7 +356,6 @@ app.post('/api/package', (req: Request, res: Response) => {
     learningPackages.push(newPackage); // Add to list
     res.status(200).send(newPackage); // Return the created object
 });
-
 
 
 /**
@@ -408,7 +413,6 @@ app.put('/api/package', (req: Request, res: Response) => {
 });
 
 
-
 /**
  * @openapi
  * /api/package-summaries:
@@ -437,11 +441,6 @@ app.get('/api/package-summaries', (req: Request, res: Response) => {
     }));
     res.status(200).send(summaries);
 });
-
-
-
-
-
 
 
 
