@@ -40,6 +40,7 @@ var express = require("express");
 var swaggerJsdoc = require("swagger-jsdoc");
 var swaggerUi = require("swagger-ui-express");
 var LearningPackage_1 = require("./models/LearningPackage");
+var LearningFact_1 = require("./models/LearningFact");
 var app = express();
 app.use(express.json());
 var jsDocOptions = {
@@ -136,6 +137,63 @@ var jsDocOptions = {
                             description: 'Difficulty level of the Learning Package',
                             minimum: 1,
                             maximum: 20,
+                        },
+                    },
+                },
+                // LearningFact
+                LearningFact: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'integer',
+                            description: 'Unique identifier for the LearningFact',
+                        },
+                        fact: {
+                            type: 'string',
+                            description: 'The fact to be learned',
+                        },
+                        confidenceLevel: {
+                            type: 'integer',
+                            description: 'Confidence level of the user for this fact',
+                        },
+                        reviewedCount: {
+                            type: 'integer',
+                            description: 'Number of times this fact has been reviewed',
+                        },
+                        isDisabled: {
+                            type: 'boolean',
+                            description: 'Whether this fact is disabled',
+                        },
+                        learningPackageId: {
+                            type: 'integer',
+                            description: 'ID of the associated LearningPackage',
+                        },
+                    },
+                },
+                // LearningFact without ID (for the POST)
+                LearningFactNoID: {
+                    type: 'object',
+                    properties: {
+                        fact: {
+                            type: 'string',
+                            description: 'The fact to be learned',
+                        },
+                        confidenceLevel: {
+                            type: 'integer',
+                            description: 'Confidence level of the user for this fact',
+                        },
+                        reviewedCount: {
+                            type: 'integer',
+                            description: 'Number of times this fact has been reviewed',
+                        },
+                        isDisabled: {
+                            type: 'boolean',
+                            description: 'Whether this fact is disabled',
+                            default: false,
+                        },
+                        learningPackageId: {
+                            type: 'integer',
+                            description: 'ID of the associated LearningPackage',
                         },
                     },
                 },
@@ -303,8 +361,8 @@ app.get('/api/package', function (req, res) { return __awaiter(void 0, void 0, v
                 return [3 /*break*/, 3];
             case 2:
                 err_1 = _a.sent();
-                console.error('Erreur lors de la récupération des packages :', err_1);
-                res.status(500).json({ error: 'Erreur interne du serveur.' });
+                console.error('Error while retrieving the packages :', err_1);
+                res.status(500).json({ error: 'Internal server error' });
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
         }
@@ -509,6 +567,224 @@ app.delete('/api/package/:id', function (req, res) { return __awaiter(void 0, vo
                 err_5 = _a.sent();
                 console.error('Error deleting the package:', err_5);
                 res.status(500).json({ error: 'Internal server error.' });
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); });
+// LEARNING FACT PART
+// GET
+/**
+ * @openapi
+ * /api/package/{id}/fact:
+ *   get:
+ *     description: Get all LearningFacts for a given LearningPackage
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: ID of the LearningPackage
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: An array of LearningFact
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/LearningFact'
+ *       500:
+ *         description: Internal server error
+ */
+app.get('/api/package/:id/fact', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var packageId, facts, err_6;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                packageId = +req.params.id;
+                return [4 /*yield*/, LearningFact_1.default.findAll({ where: { learningPackageId: packageId } })];
+            case 1:
+                facts = _a.sent();
+                res.status(200).json(facts);
+                return [3 /*break*/, 3];
+            case 2:
+                err_6 = _a.sent();
+                console.error('Error while retrieving the LearningFacts:', err_6);
+                res.status(500).json({ error: 'Internal server error' });
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); });
+// POST
+/**
+ * @openapi
+ * /api/package/{id}/fact:
+ *   post:
+ *     description: Create and add a new LearningFact to a given LearningPackage
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: ID of the LearningPackage
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/LearningFactNoID'
+ *     responses:
+ *       201:
+ *         description: The created LearningFact
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/LearningFact'
+ *       500:
+ *         description: Internal server error
+ */
+app.post('/api/package/:id/fact', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var packageId, _a, fact, confidenceLevel, reviewedCount, newFact, err_7;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _b.trys.push([0, 2, , 3]);
+                packageId = +req.params.id;
+                _a = req.body, fact = _a.fact, confidenceLevel = _a.confidenceLevel, reviewedCount = _a.reviewedCount;
+                return [4 /*yield*/, LearningFact_1.default.create({
+                        fact: fact,
+                        confidenceLevel: confidenceLevel,
+                        reviewedCount: reviewedCount,
+                        learningPackageId: packageId,
+                    })];
+            case 1:
+                newFact = _b.sent();
+                res.status(201).json(newFact);
+                return [3 /*break*/, 3];
+            case 2:
+                err_7 = _b.sent();
+                console.error('Error while creating the LearningFact:', err_7);
+                res.status(500).json({ error: 'Internal server error' });
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); });
+// PUT
+/**
+ * @openapi
+ * /api/package/{id}/fact:
+ *   put:
+ *     description: Update an existing LearningFact for a given LearningPackage
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: ID of the LearningPackage
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/LearningFact'
+ *     responses:
+ *       200:
+ *         description: The updated LearningFact
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/LearningFact'
+ *       404:
+ *         description: LearningFact not found
+ *       500:
+ *         description: Internal server error
+ */
+app.put('/api/package/:id/fact', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var factId, updates, factToUpdate, updatedFact, err_8;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 3, , 4]);
+                factId = req.body.id;
+                updates = req.body;
+                return [4 /*yield*/, LearningFact_1.default.findByPk(factId)];
+            case 1:
+                factToUpdate = _a.sent();
+                if (!factToUpdate) {
+                    res.status(404).json({ error: 'LearningFact not found' });
+                    return [2 /*return*/];
+                }
+                return [4 /*yield*/, factToUpdate.update(updates)];
+            case 2:
+                updatedFact = _a.sent();
+                res.status(200).json(updatedFact);
+                return [3 /*break*/, 4];
+            case 3:
+                err_8 = _a.sent();
+                console.error('Error while updating the LearningFact:', err_8);
+                res.status(500).json({ error: 'Internal server error' });
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); });
+// DELETE
+/**
+ * @openapi
+ * /api/package/{id}/fact:
+ *   delete:
+ *     description: Disable a LearningFact for a given LearningPackage
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: ID of the LearningPackage
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/LearningFact'
+ *     responses:
+ *       200:
+ *         description: LearningFact successfully disabled
+ *       404:
+ *         description: LearningFact not found
+ *       500:
+ *         description: Internal server error
+ */
+app.delete('/api/package/:id/fact', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var factId, factToDelete, err_9;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 3, , 4]);
+                factId = req.body.id;
+                return [4 /*yield*/, LearningFact_1.default.findByPk(factId)];
+            case 1:
+                factToDelete = _a.sent();
+                if (!factToDelete) {
+                    res.status(404).json({ error: 'LearningFact not found' });
+                    return [2 /*return*/];
+                }
+                return [4 /*yield*/, factToDelete.update({ isDisabled: true })];
+            case 2:
+                _a.sent();
+                res.status(200).json({ message: 'LearningFact disabled successfully' });
+                return [3 /*break*/, 4];
+            case 3:
+                err_9 = _a.sent();
+                console.error('Error while disabling the LearningFact:', err_9);
+                res.status(500).json({ error: 'Internal server error' });
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }

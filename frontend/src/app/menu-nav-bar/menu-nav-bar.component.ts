@@ -17,6 +17,4 @@ import {RouterLink} from "@angular/router";
 })
 
 
-export class MenuNavBarComponent {
-
-}
+export class MenuNavBarComponent {}

@@ -22,6 +22,4 @@ export interface LessonPackage {
 })
 
 
-export class LessonSearchPageComponent {
-
-}
+export class LessonSearchPageComponent {}

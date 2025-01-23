@@ -8,6 +8,6 @@ var sequelize = new sequelize_1.Sequelize('LearningFactDb', 'learningDbUser', 'a
 });
 // Tester la connexion
 sequelize.authenticate()
-    .then(function () { return console.log('Connexion à PostgreSQL réussie.'); })
-    .catch(function (err) { return console.error('Impossible de se connecter :', err); });
+    .then(function () { return console.log('Connection to PostgreSQL successful.'); })
+    .catch(function (err) { return console.error('Unable to connect :', err); });
 exports.default = sequelize;

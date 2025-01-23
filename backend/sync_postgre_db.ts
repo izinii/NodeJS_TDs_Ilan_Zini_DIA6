@@ -1,16 +1,19 @@
 // Synchronizes models with the database by creating or updating tables
 
 import LearningPackage from "./models/LearningPackage";
+import LearningFact from "./models/LearningFact";
 import sequelize from "./postgre_db";
 
-console.log('Modèle enregistré :', LearningPackage === sequelize.models.LearningPackage);
+console.log('Model registered :', LearningPackage === sequelize.models.LearningPackage);
+console.log('Model registered :', LearningFact === sequelize.models.LearningFact);
 
-sequelize.sync({ force: true }) // `force: true` recree les tables a chaque execution
+
+sequelize.sync({ force: true }) // force: true recreates the tables on each execution
     .then(() => {
-        console.log('Les tables ont été synchronisées avec succès.');
+        console.log('The tables have been successfully synchronized.');
         process.exit(0);
     })
     .catch((err) => {
-        console.error('Erreur lors de la synchronisation des tables :', err);
+        console.error('Error while synchronizing the tables :', err);
         process.exit(1);
     });
