@@ -2,7 +2,7 @@ import express = require('express');
 import { Request, Response} from 'express';
 import swaggerJsdoc = require('swagger-jsdoc');
 import swaggerUi = require('swagger-ui-express');
-import { LearningPackage } from './models/LearningPackage';
+import LearningPackage from "./models/LearningPackage";
 
 
 
@@ -20,6 +20,8 @@ const jsDocOptions = {
         },
         components: {
             schemas: {
+
+                // app-todos
                 Todo: {
                     type: 'object',
                     properties: {
@@ -34,6 +36,9 @@ const jsDocOptions = {
                         },
                     },
                 },
+
+
+                // app-todos without id
                 TodoNoId: {
                     type: 'object',
                     properties: {
@@ -46,7 +51,8 @@ const jsDocOptions = {
                     },
                 },
 
-                // Define other schemas as needed
+
+                // learning package
                 LearningPackage: {
                     type: 'object',
                     properties: {
@@ -77,13 +83,43 @@ const jsDocOptions = {
                             maximum: 20,
                         },
                     },
-                    required: ['id', 'title', 'description', 'category', 'targetAudience', 'difficulty'],
+                },
+
+
+                // learning package without ID (for the POST)
+                LearningPackageNoID: {
+                    type: 'object',
+                    properties: {
+                        title: {
+                            type: 'string',
+                            description: 'Title of the Learning Package',
+                        },
+                        description: {
+                            type: 'string',
+                            description: 'Description of the Learning Package',
+                        },
+                        category: {
+                            type: 'string',
+                            description: 'Category of the Learning Package',
+                        },
+                        targetAudience: {
+                            type: 'string',
+                            description: 'Target audience for the Learning Package',
+                        },
+                        difficulty: {
+                            type: 'integer',
+                            description: 'Difficulty level of the Learning Package',
+                            minimum: 1,
+                            maximum: 20,
+                        },
+                    },
                 },
             },
         },
     },
     apis: ['app-todo.js'],
 };
+
 
 
 const apiDoc = swaggerJsdoc(jsDocOptions);
@@ -121,6 +157,7 @@ let todos : Todo[] = [
 ];
 
 
+// GET all
 /**
  * @openapi
  * /api/todos:
@@ -140,6 +177,7 @@ app.get('/api/todos', (req: Request, res: Response) => {
 });
 
 
+// POST
 /**
  * @openapi
  * /api/todos:
@@ -166,6 +204,7 @@ app.post('/api/todos', (req: Request, res: Response) => {
 });
 
 
+// PUT
 /**
  * @openapi
  * /api/todos:
@@ -203,39 +242,7 @@ app.put('/api/todos', (req: Request, res: Response) => {
 });
 
 
-/**
- * @openapi
- * /api/todos/{id}:
- *   get:
- *     description: get a todo by its id
- *     parameters:
- *         - name: id
- *           in: path
- *           required: true
- *           description: The ID of the Todo to get
- *           schema:
- *             type: number
- *     responses:
- *       200:
- *         description: the todo
- *         schema:
- *           $ref: '#/components/schemas/Todo'
- *       404:
- *         description: Todo not found
- */
-app.get('/api/todos/:id', (req, res) => {
-    const id = +req.params['id']
-    console.log('handle http GET /api/todos/:id', id);
-    const idx = todos.findIndex((x) => x.id === id);
-    if (idx !== -1) {
-        const found = todos[idx];
-        res.send(found);
-    } else {
-        res.status(404).send('Todo entity not found by id:' + id);
-    }
-});
-
-
+// DELETE (with id)
 /**
  * @openapi
  * /api/todos/{id}:
@@ -268,25 +275,15 @@ app.delete('/api/todos/:id', (req, res) => {
     }
 });
 
-// app.patch()
 
 
 
 
 
+// LEARNING PACKAGE PART
 
 
-// PACKAGE PART
-
-
-const learningPackages: LearningPackage[] = [
-    { id: 1, title: "Learn TypeScript", description: "An introductory course to TypeScript.", category: "Programming", targetAudience: "Beginner, 15+ years old", difficulty: 5 },
-    { id: 2, title: "Learn NodeJs", description: "A course on building backend applications using Node.js.", category: "Programming", targetAudience: "Intermediate, 18+ years old", difficulty: 8 },
-    { id: 3, title: "Learn Html", description: "Basic web development with HTML.", category: "Web Development", targetAudience: "Beginner, 12+ years old", difficulty: 4 },
-    { id: 4, title: "Learn Angular", description: "A comprehensive guide to building web apps with Angular.", category: "Web Development", targetAudience: "Intermediate, 16+ years old", difficulty: 7 },
-];
-
-
+// GET all
 /**
  * @openapi
  * /api/package:
@@ -302,145 +299,189 @@ const learningPackages: LearningPackage[] = [
  *               items:
  *                 $ref: '#/components/schemas/LearningPackage'
  */
-app.get('/api/package', (req: Request, res: Response) => {
-    console.log('handle http GET /api/package');
-    res.status(200).json(learningPackages);
+app.get('/api/package', async (req: Request, res: Response) => {
+    try {
+        const packages = await LearningPackage.findAll();
+        res.status(200).json(packages);
+    } catch (err) {
+        console.error('Erreur lors de la récupération des packages :', err);
+        res.status(500).json({error: 'Erreur interne du serveur.'});
+    }
 });
 
 
+// GET a specific id
 /**
  * @openapi
- * /api/package:
- *   post:
- *     description: Create a new LearningPackage
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/LearningPackage'
+ * /api/package/{id}:
+ *   get:
+ *     description: Get a Learning Package by ID
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: ID of the Learning Package
+ *         schema:
+ *           type: integer
  *     responses:
  *       200:
- *         description: Created LearningPackage
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/LearningPackage'
- *       400:
- *         description: Missing required fields
- */
-app.post('/api/package', (req: Request, res: Response) => {
-    const { title, description, category, targetAudience, difficulty } = req.body;
-
-    // Validate required fields
-    if (!title || !description || !category || !targetAudience || difficulty === undefined) {
-        res.status(400).send("Mandatory fields 'title', 'description', 'category', 'targetAudience', and 'difficulty' are missing.");
-        return;
-    }
-
-    // Validate difficulty range
-    if (difficulty < 1 || difficulty > 20) {
-        res.status(400).send("Field 'difficulty' must be between 1 and 20.");
-        return;
-    }
-
-    const newPackage: LearningPackage = {
-        id: learningPackages.length + 1, // Generate new id
-        title,
-        description,
-        category,
-        targetAudience,
-        difficulty,
-    };
-
-    learningPackages.push(newPackage); // Add to list
-    res.status(200).send(newPackage); // Return the created object
-});
-
-
-/**
- * @openapi
- * /api/package:
- *   put:
- *     description: Update an existing LearningPackage
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/LearningPackage'
- *     responses:
- *       200:
- *         description: Updated LearningPackage
+ *         description: The requested Learning Package
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/LearningPackage'
  *       404:
- *         description: LearningPackage not found
+ *         description: Learning Package not found
  */
-app.put('/api/package', (req: Request, res: Response) => {
-    const { id, title, description, category, targetAudience, difficulty } = req.body;
+app.get('/api/package/:id', async (req: Request, res: Response): Promise<void> => {
+    try {
+        const id = +req.params.id;
 
-    // Validate ID and all fields
-    if (!id || !title || !description || !category || !targetAudience || difficulty === undefined) {
-        res.status(400).send("Mandatory fields 'id', 'title', 'description', 'category', 'targetAudience', and 'difficulty' are missing.");
-        return;
+        const foundPackage = await LearningPackage.findByPk(id);
+        if (!foundPackage) {
+            res.status(404).json({ error: 'Learning Package not found.' });
+            return;
+        }
+
+        res.status(200).json(foundPackage);
+    } catch (err) {
+        console.error('Error retrieving the package:', err);
+        res.status(500).json({ error: 'Internal server error.' });
     }
+});
 
-    // Validate difficulty range
-    if (difficulty < 1 || difficulty > 20) {
-        res.status(400).send("Field 'difficulty' must be between 1 and 20.");
-        return;
-    }
 
-    const packageIndex = learningPackages.findIndex((pkg) => pkg.id === id);
+// POST
+/**
+ * @openapi
+ * /api/package:
+ *   post:
+ *     description: Create a new Learning Package
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/LearningPackageNoID'
+ *     responses:
+ *       201:
+ *         description: The created Learning Package
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/LearningPackage'
+ */
+app.post('/api/package', async (req: Request, res: Response) => {
+    try {
+        const { title, description, category, targetAudience, difficulty } = req.body;
 
-    if (packageIndex !== -1) {
-        // Update the learning package
-        learningPackages[packageIndex] = {
-            id,
+        const newPackage = await LearningPackage.create({
             title,
             description,
             category,
             targetAudience,
             difficulty,
-        };
-        res.status(200).send(learningPackages[packageIndex]); // Respond with updated object
-    } else {
-        res.status(404).send(`Entity not found for id: ${id}`);
+        });
+
+        res.status(201).json(newPackage);
+    } catch (err) {
+        console.error('Error creating a new package:', err);
+        res.status(500).json({ error: 'Internal server error.' });
     }
 });
 
 
+// PUT
 /**
  * @openapi
- * /api/package-summaries:
- *   get:
- *     description: Get a summary of all LearningPackages (only id and title)
+ * /api/package/{id}:
+ *   put:
+ *     description: Update an existing Learning Package by ID
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: ID of the Learning Package to update
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/LearningPackage'
  *     responses:
  *       200:
- *         description: An array of LearningPackage summaries
+ *         description: The updated Learning Package
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                   title:
- *                     type: string
+ *               $ref: '#/components/schemas/LearningPackage'
+ *       404:
+ *         description: Learning Package not found
  */
-app.get('/api/package-summaries', (req: Request, res: Response) => {
-    // Get the summaries with only id and title fields
-    const summaries = learningPackages.map((pkg) => ({
-        id: pkg.id,
-        title: pkg.title,
-    }));
-    res.status(200).send(summaries);
+app.put('/api/package/:id', async (req: Request, res: Response): Promise<void> => {
+    try {
+        const id = +req.params.id;
+        const updatedData = req.body;
+
+        const packageToUpdate = await LearningPackage.findByPk(id);
+        if (!packageToUpdate) {
+            res.status(404).json({ error: 'Learning Package not found.' });
+            return;
+        }
+
+        const updatedPackage = await packageToUpdate.update(updatedData);
+        res.status(200).json(updatedPackage);
+    } catch (err) {
+        console.error('Error updating the package:', err);
+        res.status(500).json({ error: 'Internal server error.' });
+    }
 });
+
+
+// DELETE
+/**
+ * @openapi
+ * /api/package/{id}:
+ *   delete:
+ *     description: Delete a Learning Package by ID
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: ID of the Learning Package to delete
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: The deleted Learning Package
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/LearningPackage'
+ *       404:
+ *         description: Learning Package not found
+ */
+app.delete('/api/package/:id', async (req: Request, res: Response): Promise<void> => {
+    try {
+        const id = +req.params.id;
+
+        const packageToDelete = await LearningPackage.findByPk(id);
+        if (!packageToDelete) {
+            res.status(404).json({ error: 'Learning Package not found.' });
+            return;
+        }
+
+        await packageToDelete.destroy();
+        res.status(200).json(packageToDelete);
+    } catch (err) {
+        console.error('Error deleting the package:', err);
+        res.status(500).json({ error: 'Internal server error.' });
+    }
+});
+
+
 
 
 
